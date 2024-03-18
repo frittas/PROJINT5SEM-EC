@@ -2,7 +2,7 @@ import cv2
 
 # Inicializar a câmera
 webcam = cv2.VideoCapture(0)
-classificador = cv2. CascadeClassifier(r'C:/Users/Murilo/Desktop/WorkSpace/OpenCV/cascades/haarcascade_upperbody.xml')
+classificador = cv2. CascadeClassifier(r'Server/cascades/haarcascade_upperbody.xml')
 
 while True:
     validation, frame = webcam.read()
