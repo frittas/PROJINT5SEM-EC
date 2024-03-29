@@ -1,0 +1,3 @@
+openvc
+facial_recogniton
+mediapipe

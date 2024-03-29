@@ -1,20 +1,46 @@
+# import the necessary packages
+import numpy as np
 import cv2
+ 
+# initialize the HOG descriptor/person detector
+hog = cv2.HOGDescriptor()
+hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
-# Inicializar a câmera
-webcam = cv2.VideoCapture(0)
-classificador = cv2. CascadeClassifier(r'Server/cascades/haarcascade_upperbody.xml')
+cv2.startWindowThread()
 
-while True:
-    validation, frame = webcam.read()
-    if not validation:
+# open webcam video stream
+cap = cv2.VideoCapture(0)
+
+
+while(True):
+    # Capture frame-by-frame
+    ret, frame = cap.read()
+
+    # resizing for faster detection
+    frame = cv2.resize(frame, (640, 480))
+    # using a greyscale picture, also for faster detection
+    gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+
+    # detect people in the image
+    # returns the bounding boxes for the detected objects
+    boxes, weights = hog.detectMultiScale(frame, winStride=(8,8) )
+
+    boxes = np.array([[x, y, x + w, y + h] for (x, y, w, h) in boxes])
+
+    for (xA, yA, xB, yB) in boxes:
+        # display the detected boxes in the colour picture
+        cv2.rectangle(frame, (xA, yA), (xB, yB),
+                          (0, 255, 0), 2)
+    
+
+    # Display the resulting frame
+    cv2.imshow('frame',frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-    # check, frame = webcam.read()
-    frameGray = cv2. cvtColor (frame,cv2.COLOR_BGR2GRAY)
-    objetos = classificador.detectMultiScale(frameGray, minSize=(50,50), scaleFactor=1.5)
-    # print (objetos)
-    for x,y,l,a in objetos: 
-        cv2. rectangle (frame,(x,y),(x+l,y+a),(255,0,0),2)
-    
-    cv2. imshow("Imagem", frame)
-    cv2.waitKey(1)
+# When everything done, release the capture
+cap.release()
+
+# finally, close the window
+cv2.destroyAllWindows()
+cv2.waitKey(1)
