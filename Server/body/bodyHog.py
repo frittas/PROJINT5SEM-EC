@@ -1,7 +1,7 @@
 # import the necessary packages
 import numpy as np
 import cv2
- 
+
 # initialize the HOG descriptor/person detector
 hog = cv2.HOGDescriptor()
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
@@ -9,7 +9,7 @@ hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 cv2.startWindowThread()
 
 # open webcam video stream
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('http://192.168.0.238:81/stream')
 
 
 while(True):
@@ -29,8 +29,7 @@ while(True):
 
     for (xA, yA, xB, yB) in boxes:
         # display the detected boxes in the colour picture
-        cv2.rectangle(frame, (xA, yA), (xB, yB),
-                          (0, 255, 0), 2)
+        cv2.rectangle(frame, (xA, yA), (xB, yB), (0, 255, 0), 2)
     
 
     # Display the resulting frame
