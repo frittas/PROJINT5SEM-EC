@@ -1,0 +1,5 @@
+openvc
+facial_recogniton
+mediapipe
+tensorflow
+keras

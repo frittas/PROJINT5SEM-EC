@@ -3,7 +3,7 @@ import face_recognition
 import os
 
 # Carregar e codificar imagens da base
-pasta_base = "C:/Users/Murilo/Desktop/WorkSpace/OpenCV/database"
+pasta_base = "Server/database"
 nomes_base = []
 imagens_base = []
 
