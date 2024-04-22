@@ -1,2 +1,7 @@
+openvc
+facial_recogniton
+mediapipe
+tensorflow
+keras
 flask
 opencv-python
