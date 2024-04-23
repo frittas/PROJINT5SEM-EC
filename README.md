@@ -6,11 +6,11 @@ Projeto Integrador 5Sem. Engenharia Comp - Unisal
 ## Checklist
 
 - [x] Inicializar Esp32 cam.
-- [] Módulo de cadastro de rostos
-- [] Módulo de Reconhecimento
-- [] Módulo de Alertas
-- [] Exposição dos serviços via HTTP/Websocket
-- [] Criação do FrontEnd
+- [ ] Módulo de cadastro de rostos
+- [ ] Módulo de Reconhecimento
+- [ ] Módulo de Alertas
+- [ ] Exposição dos serviços via HTTP/Websocket
+- [ ] Criação do FrontEnd
 
 
 
