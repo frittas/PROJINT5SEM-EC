@@ -1,6 +1,4 @@
-openvc
-facial_recogniton
-mediapipe
+face-recognition
 tensorflow
 keras
 flask
