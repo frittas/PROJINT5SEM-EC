@@ -2,6 +2,7 @@ import cv2
 import os
 
 webcam = cv2.VideoCapture(0)
+# urlCam = 'http://192.168.0.238:81/stream'
 
 capturar_foto = False
 destino = "C:/Users/Murilo/Desktop/WorkSpace/OpenCV/database"
