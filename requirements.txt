@@ -1,7 +1,10 @@
 openvc
-facial_recogniton
+opencv-python
+cmake
+dlib==19.24.2
+face_recogniton
 mediapipe
 tensorflow
 keras
 flask
-opencv-python
+

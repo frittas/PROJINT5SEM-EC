@@ -2,7 +2,7 @@ import cv2
 import mediapipe as mp
 
 urlCam = 'http://192.168.0.238:81/stream'
-webcam = cv2.VideoCapture(urlCam)
+webcam = cv2.VideoCapture(0)
 solucao_reconhecimento_rosto = mp.solutions.face_detection
 reconhecedor_rostos = solucao_reconhecimento_rosto.FaceDetection()
 desenho = mp.solutions.drawing_utils
