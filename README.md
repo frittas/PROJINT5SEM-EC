@@ -9,6 +9,7 @@ Projeto Integrador 5Sem. Engenharia Comp - Unisal
 - [x] Módulo de cadastro de rostos
 - [x] Módulo de Reconhecimento
 - [x] Módulo de Alertas
+- [x] Módulo de persistência de dados
 - [ ] Exposição dos serviços via HTTP/Websocket
 - [ ] Criação do FrontEnd
 
