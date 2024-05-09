@@ -7,7 +7,7 @@ solucao_reconhecimento_rosto = mp.solutions.face_detection
 reconhecedor_rostos = solucao_reconhecimento_rosto.FaceDetection()
 desenho = mp.solutions.drawing_utils
 
-while True:       
+while True:
     validation, frame = webcam.read()
     if not validation:
         break    

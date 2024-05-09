@@ -1,11 +1,10 @@
 import cv2
 import os
 
-webcam = cv2.VideoCapture(0)
 # urlCam = 'http://192.168.0.238:81/stream'
-
+webcam = cv2.VideoCapture(0)
 capturar_foto = False
-destino = "C:/Users/Murilo/Desktop/WorkSpace/OpenCV/database"
+destino = "Server/database"
 i = 0
     
 while True:
@@ -14,7 +13,6 @@ while True:
         break
 
     cv2.imshow("Video", frame)   
-
     key = cv2.waitKey(5)     
         
     if key == 27:  # Pressione ESC para sair
