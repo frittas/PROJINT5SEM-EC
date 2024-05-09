@@ -1,0 +1,177 @@
+@import "./base.css";
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+    flex-direction: column;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    column-gap: 15px;
+    padding: 0 2rem;
+  }
+
+  .video-wrapper {
+    min-width: 640px;
+    min-height: 480px;
+    border: solid 1px black;
+  }
+
+  .log-wrapper {
+    grid-column-start: 1;
+    grid-row-start: 2;
+  }
+}
+
+html,
+body {
+  background-color: #212121;
+}
+
+h1 {
+  color: #cccccc;
+}
+
+textarea {
+  resize: none;
+}
+
+.console {
+  font-family: "Press Start 2P", cursive;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 10px;
+  box-sizing: border-box;
+  .output {
+    width: 100%;
+    font-size: 12px;
+    color: #cccccc;
+    span {
+      line-height: 20px;
+    }
+    span.grey {
+      color: #cccccc;
+    }
+    span.green {
+      color: #2ecc71;
+    }
+    span.red {
+      color: #e74c3c;
+    }
+    span.blue {
+      color: #3498db;
+    }
+    pre {
+      font-size: 9px;
+      animation: glitch 0.2s linear infinite;
+      animation-play-state: paused;
+      &:hover {
+        animation-play-state: running;
+      }
+    }
+  }
+  .action {
+    width: 100%;
+    font-size: 14px;
+    margin-top: 20px;
+
+    span {
+      display: inline-block;
+      width: 60px;
+      float: left;
+      color: white;
+    }
+    textarea {
+      width: calc(100% - 65px);
+      float: left;
+      background: none;
+      border: none;
+      color: white;
+      padding: 0;
+      margin: 0;
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
+
+span.seperator {
+  font-size: 12px;
+  animation: changeColor 10s ease-in-out infinite;
+}
+
+/* CSS */
+.button {
+  font-family: "Press Start 2P", cursive;
+
+  background-color: #6b60ea;
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  /* font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial,
+    sans-serif; */
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 10px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-primary:hover,
+.button-primary:focus {
+  background-color: rgb(132, 159, 249);
+}
+
+.button-secondary:hover,
+.button-secondary:focus {
+  background-color: #aa4460;
+}
+
+.button-secondary {
+  background-color: #a81f44;
+}
+.button-primary {
+  background-color: #6b60ea;
+}

@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/main.css" />
     <title>Live Streaming - ESPCam x OpenCV</title>
-</head>
-<body>
-    <h1>Live Streaming - ESPCam x OpenCV</h1>
-    <!-- <img src="{{url_for('video')}}" /> -->
-    <img src="http://127.0.0.1:5000/video" />
-</body>
-
+  </head>
+  <body>
+    {% include "header.html" %}
+    <div id="app">
+      <div>{% include "video.html" %}</div>
+      <div>{% include "controls.html" %}</div>
+      <div class="log-wrapper">{% include "logs.html" %}</div>
+    </div>
+  </body>
 </html>

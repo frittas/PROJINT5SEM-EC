@@ -3,12 +3,10 @@ import cv2
 
 app = Flask(__name__)
 
-camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-
 
 def generate_frames():
     camera_port = 0
-    camera = cv2.VideoCapture(camera_port)  # this makes a web cam object
+    camera = cv2.VideoCapture(camera_port, cv2.CAP_DSHOW)  # this makes a web cam object
 
     while True:
         retval, im = camera.read()
@@ -23,7 +21,7 @@ def generate_frames():
 
 @app.route("/")
 def index():
-    return Response("teste")
+    return render_template("index.html")
 
 
 @app.route("/video")

@@ -1,0 +1,143 @@
+<style>
+@keyframes glitch {
+	0% {
+		color: white;
+		transform: translateX(0) translateY(0%);
+	}
+	25% {
+		color: #3498db;
+		transform: translateX(1px) translateY(1px);
+	}
+	40% {
+		color: #e74c3c;
+		transform: translateX(-2px) translateY(-2px);
+	}
+	50% {
+		color: #cccccc;
+		transform: translateX(0) translateY(0);
+	}
+	80% {
+		color: #3498db;
+		transform: translateX(2px) translateY(2px);
+	}
+	90% {
+		color: #e74c3c;
+		transform: translateX(-1px) translateY(-1px);
+	}
+	100% {
+		color: white;
+		transform: translateX(0) translateY(0);
+	}
+}
+
+@keyframes changeColor {
+	0% {
+		color: #cccccc;
+	}
+	25% {
+		color: #2ecc71;
+	}
+	50% {
+		color: #e74c3c;
+	}
+	75% {
+		color: #3498db;
+	}
+	100% {
+		color: #cccccc;
+	}
+}
+</style>
+<link href="https://fonts.cdnfonts.com/css/press-start-2p" rel="stylesheet">
+
+<div class="console">
+	<div class="output">
+		<span>Initializing...</span><br/>
+		<span class="green">0.0002ms ok!</span><br/>
+		<span class="seperator">== == == == == == == == == == == == == == == == == ==</span></br>
+		<pre contenteditable="false">
+            ▄████████    ▄████████    ▄███████▄       ▄█    █▄   ▄█     ▄████████  ▄█   ▄██████▄  ███▄▄▄▄   
+            ███    ███   ███    ███   ███    ███      ███    ███ ███    ███    ███ ███  ███    ███ ███▀▀▀██▄ 
+            ███    █▀    ███    █▀    ███    ███      ███    ███ ███▌   ███    █▀  ███▌ ███    ███ ███   ███ 
+           ▄███▄▄▄       ███          ███    ███      ███    ███ ███▌   ███        ███▌ ███    ███ ███   ███ 
+          ▀▀███▀▀▀     ▀███████████ ▀█████████▀       ███    ███ ███▌ ▀███████████ ███▌ ███    ███ ███   ███ 
+            ███    █▄           ███   ███             ███    ███ ███           ███ ███  ███    ███ ███   ███ 
+            ███    ███    ▄█    ███   ███             ███    ███ ███     ▄█    ███ ███  ███    ███ ███   ███ 
+            ██████████  ▄████████▀   ▄████▀            ▀██████▀  █▀    ▄████████▀  █▀    ▀██████▀   ▀█   █▀  
+                                                                                                             
+        </pre></br>
+		<span class="seperator">== == == == == == == == == == == == == == == == == ==</span></br>
+		<!-- <span>Hope you have fun discovering all the <span class="red">hidden gems</span>!</span> -->
+		</br>
+		<span class="blue">type '<span class="grey">help</span>' to see a list of comands available <br/> or '<span class="grey">contact</span>' for a list of ways to contact me.</span><br>
+	</div>
+	<div class="action">
+		<span>logs$ </span>
+		<!-- <textarea class="input" name="input" cols="30" rows="1"></textarea> -->
+	</div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+// =====================
+// Create required vars
+// =====================
+var output = $('.output');
+var input = $('textarea.input');
+var toOutput;
+
+// Creates the event listner for the comands ==
+// Yes this is a long one - could do with some
+// improvements ===============================
+input.keypress(function(e) {
+	if (e.which == 13) {
+		var inputVal = $.trim(input.val());
+		//console.log(inputVal);
+
+		if (inputVal == "help") {
+			help();
+			input.val('');
+		} else if (inputVal == "ping") {
+			pong();
+			input.val('');
+		} else if (inputVal == "clear") {
+			clearConsole();
+			input.val('');
+		} else if (inputVal.startsWith("say") === true) {
+			sayThis(inputVal);
+			input.val('');
+		} else {
+			Output('<span>command not found</span></br>');
+			input.val('');
+		}
+	}
+});
+
+
+function seperator() {
+	Output('<span class="seperator">== == == == == == == == == == == == == == == == == ==</span></br>');
+}
+
+function clearConsole() {
+	output.html("");
+	Output('<span>clear</span></br>');
+}
+// prints out a list of "all" comands available
+function help() {
+	var commandsArray = ['Help: List of available commands', '>help', '>clear', '>say'];
+	for (var i = 0; i < commandsArray.length; i++) {
+		var out = '<span>' + commandsArray[i] + '</span><br/>'
+		Output(out);
+	}
+}
+
+// function to the say command
+function sayThis(data) {
+	data = data.substr(data.indexOf(' ') + 1);
+	Output('<span class="green">[say]:</span><span>' + data + '</span></br>');
+}
+
+// Prints out the result of the command into the output div
+function Output(data) {
+	$(data).appendTo(output);
+}
+</script>
