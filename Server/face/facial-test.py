@@ -1,6 +1,7 @@
 import cv2
 import face_recognition
 import os
+import time
 
 # Carregar e codificar imagens da base
 pasta_base = "Server/database"
@@ -20,37 +21,38 @@ for nome_arquivo in os.listdir(pasta_base):
     if codificacoes_base:
         imagens_base.extend(codificacoes_base)
 
+# Definir o intervalo de tempo para comparação (em segundos)
+intervalo_tempo = 3
+
 # Inicializar a câmera
+# urlCam = 'http://192.168.0.238:81/stream'
 webcam = cv2.VideoCapture(0)
 
-# Inicializar o detector de corpo
-body_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_upperbody.xml")
+# Tempo da última comparação
+ultimo_tempo_comparacao = time.time()
 
 while True:
     validation, frame = webcam.read()
     if not validation:
         break
     
-    # Encontrar corpos na imagem da câmera
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    bodies = body_cascade.detectMultiScale(gray, 1.1, 4)
-
-    # Exibir a imagem da câmera com retângulos ao redor dos corpos
-    for (x, y, w, h) in bodies:
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
-
-        # Recortar a região do corpo para detectar rostos
-        body_region = frame[y:y+h, x:x+w]
-
-        # Encontrar faces na região do corpo
-        face_locations = face_recognition.face_locations(body_region)
-        face_codificacoes = face_recognition.face_encodings(body_region, face_locations)
+    tempo_atual = time.time()
+    
+    # Verificar se é hora de fazer a próxima comparação
+    if tempo_atual - ultimo_tempo_comparacao >= intervalo_tempo:
+        # Atualizar o tempo da última comparação
+        ultimo_tempo_comparacao = tempo_atual
+        
+        # Encontrar faces na imagem da câmera
+        face_locations = face_recognition.face_locations(frame)
+        face_codificacoes = face_recognition.face_encodings(frame, face_locations)
 
         # Comparar cada face encontrada com a lista de imagens da base
         for face_codificacao in face_codificacoes:
             correspondencia_encontrada = False
             for codificacao_base, nome_base in zip(imagens_base, nomes_base):
-                comparacao = face_recognition.compare_faces([codificacao_base], face_codificacao)
+                comparacao = face_recognition.compare_faces(
+                    [codificacao_base], face_codificacao)
 
                 if comparacao[0]:  # Se for uma correspondência
                     print(f"Rosto detectado: {nome_base}")
@@ -59,6 +61,10 @@ while True:
 
             if not correspondencia_encontrada:
                 print("Rosto detectado, mas não está na base de dados!")
+
+    # Exibir a imagem da câmera com retângulos ao redor das faces
+    # for (top, right, bottom, left) in face_locations:
+    #     cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
 
     cv2.imshow("Faces", frame)
 
