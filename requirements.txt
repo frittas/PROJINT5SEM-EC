@@ -1,8 +1,7 @@
-face-recognition
+dlib==19.24.2
 opencv-python
 cmake
-dlib==19.24.2
-face_recogniton
+face_recognition
 mediapipe
 tensorflow
 keras
