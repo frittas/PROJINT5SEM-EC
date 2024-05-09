@@ -7,22 +7,23 @@ camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 
 def generate_frames():
-    while True:
-        # read the camera frame
-        success, frame = camera.read()
-        if not success:
-            break
-        else:
-            ret, buffer = cv2.imencode(".jpg", frame)
-            frame = buffer.tobytes()
+    camera_port = 0
+    camera = cv2.VideoCapture(camera_port)  # this makes a web cam object
 
-        yield(b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+    while True:
+        retval, im = camera.read()
+        imgencode = cv2.imencode(".jpg", im)[1]
+        stringData = imgencode.tostring()
+        yield (
+            b"--frame\r\n" b"Content-Type: text/plain\r\n\r\n" + stringData + b"\r\n"
+        )
+
+    del camera
 
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return Response("teste")
 
 
 @app.route("/video")
@@ -33,4 +34,4 @@ def video():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="localhost", port=5000, debug=True, threaded=True)
