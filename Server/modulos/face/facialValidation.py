@@ -21,6 +21,7 @@ for nome_arquivo in os.listdir(pasta_base):
         imagens_base.extend(codificacoes_base)
 
 # Inicializar a câmera
+# urlCam = 'http://192.168.0.238:81/stream'
 webcam = cv2.VideoCapture(0)
 
 while True:

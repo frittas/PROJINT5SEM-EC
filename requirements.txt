@@ -1,8 +1,11 @@
-openvc
-facial_recogniton
+dlib==19.24.2
+opencv-python
+cmake
+face_recognition
 mediapipe
 tensorflow
 keras
 flask
 opencv-python
 twilio
+
