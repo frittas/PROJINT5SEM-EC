@@ -22,7 +22,7 @@ for nome_arquivo in os.listdir(pasta_base):
 
 # Inicializar a câmera
 # urlCam = 'http://192.168.0.238:81/stream'
-webcam = cv2.VideoCapture(0)
+webcam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 while True:
     validation, frame = webcam.read()
