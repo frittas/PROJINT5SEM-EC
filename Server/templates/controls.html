@@ -1,2 +1,20 @@
-<h1><button type="button" class="button button-primary">Cadastrar novo rosto</button></h1>
-<h1><button type="button" class="button button-secondary">Encerrar</button></h1>
+<h1>
+  <input type="text" id="name" />
+  <button type="button" class="button button-primary" onclick="saveFace()">
+    Cadastrar novo rosto
+  </button>
+</h1>
+<script>
+  function saveFace() {
+    var value = $("#name").val();
+    $.ajax({
+      type: "POST",
+      url: "{{ url_for('save') }}",
+      data: JSON.stringify(value),
+      contentType: "application/json",
+      success: function (data) {
+        console.log(data);
+      },
+    });
+  }
+</script>

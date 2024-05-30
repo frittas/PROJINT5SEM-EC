@@ -74,3 +74,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("../static/PressStart2P-Regular.ttf") format("truetype");
+}

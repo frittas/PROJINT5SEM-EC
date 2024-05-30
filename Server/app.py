@@ -3,7 +3,7 @@ import cv2
 
 from modules.FaceRecognition import FaceRecognition
 from server.modules.ImageRepository import ImageRepository
-
+from flask import request
 
 
 from multiprocessing.pool import ThreadPool
@@ -19,10 +19,11 @@ facereco = FaceRecognition()
 repository = ImageRepository(connection_string, db_name, collection_name)
 
 camera_port = 0
-camera = cv2.VideoCapture(camera_port)  # this makes a web cam object
+camera = cv2.VideoCapture("http://192.168.4.1/stream")  # this makes a web cam object
+
 
 def generate_frames():
-   
+
     while True:
         retval, frame = camera.read()
         if not retval:
@@ -43,10 +44,10 @@ pool = ThreadPool(processes=1)
 async_result = pool.apply_async(generate_frames)
 
 
-def save_face():
+def save_face(name: str):
     retval, frame = camera.read()
     imgencode = cv2.imencode(".jpg", frame)[1].tobytes()
-    repository.salvar_imagem(imgencode, "Rafael")
+    repository.salvar_imagem(imgencode, name)
     facereco.carregarImagens()
 
 
@@ -55,9 +56,10 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/save")
+@app.route("/", methods=["POST"])
 def save():
-    return Response(save_face())
+    name = request.form["name"]
+    return Response(save_face(name))
 
 
 @app.route("/video")
