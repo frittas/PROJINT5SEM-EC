@@ -1,43 +1,43 @@
 from flask import Flask, render_template, Response
+from flask_socketio import SocketIO
+from modules.FaceRecognition import FaceRecognition
+from modules.ImageRepository import ImageRepository
+from flask import request
+from multiprocessing.pool import ThreadPool
 import cv2
 
-from modules.FaceRecognition import FaceRecognition
-from server.modules.ImageRepository import ImageRepository
-from flask import request
-
-
-from multiprocessing.pool import ThreadPool
-
 app = Flask(__name__)
-
+app.config['SECRET_KEY'] = 'vnkdjnfjknfl1232#'
+socketio = SocketIO(app)
 
 connection_string = "mongodb://localhost:27017/"  # configuracao do mongo
 db_name = "esp_vision"
 collection_name = "imagens"
-facereco = FaceRecognition()
+facereco = FaceRecognition(socketio)
 
 repository = ImageRepository(connection_string, db_name, collection_name)
 
 camera_port = 0
-camera = cv2.VideoCapture("http://192.168.4.1/stream")  # this makes a web cam object
+# camera = cv2.VideoCapture(camera_port)  # this makes a web cam object
+general_frame = None
 
 
 def generate_frames():
-
+    # this makes a web cam object
+    camera = cv2.VideoCapture("http://192.168.3.52:81/stream")
     while True:
         retval, frame = camera.read()
         if not retval:
             break
-
-        reco = facereco.compararFaces(frame)
-        if reco:
-            print(f"Rosto detectado: {reco}")
-
+        global general_frame
+        general_frame = frame
+        facereco.compararFaces(frame)
         imgencode = cv2.imencode(".jpg", frame)[1]
         stringData = imgencode.tobytes()
         yield (
             b"--frame\r\n" b"Content-Type: text/plain\r\n\r\n" + stringData + b"\r\n"
         )
+    camera.release()
 
 
 pool = ThreadPool(processes=1)
@@ -45,21 +45,21 @@ async_result = pool.apply_async(generate_frames)
 
 
 def save_face(name: str):
-    retval, frame = camera.read()
-    imgencode = cv2.imencode(".jpg", frame)[1].tobytes()
+    imgencode = cv2.imencode(".jpg", general_frame)[1].tobytes()
     repository.salvar_imagem(imgencode, name)
+    socketio.emit('log', f"Rosto Salvo!: {name}")
     facereco.carregarImagens()
 
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def index():
     return render_template("index.html")
 
 
-@app.route("/", methods=["POST"])
+@app.route("/save", methods=['GET', 'POST'])
 def save():
-    name = request.form["name"]
-    return Response(save_face(name))
+    data = request.get_json()
+    return Response(save_face(data))
 
 
 @app.route("/video")
@@ -70,4 +70,5 @@ def video():
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=8000, debug=True, threaded=True)
+    # app.run(host="localhost", port=8000, debug=True, threaded=True)
+    socketio.run(app, host='localhost', port=8000, debug=True)

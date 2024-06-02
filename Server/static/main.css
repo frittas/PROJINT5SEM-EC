@@ -43,8 +43,8 @@ a,
   }
 
   .log-wrapper {
-    grid-column-start: 1;
-    grid-row-start: 2;
+    grid-column-start: 2;
+    grid-row-start: 1;
   }
 }
 
@@ -101,8 +101,10 @@ textarea {
     width: 100%;
     font-size: 14px;
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
 
-    span {
+    h2 {
       display: inline-block;
       width: 60px;
       float: left;
@@ -174,4 +176,16 @@ span.seperator {
 }
 .button-primary {
   background-color: #6b60ea;
+}
+
+.control-wrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.name-input{
+  font-family: "Press Start 2P";
+  height: 40px;
+  border-radius: 8px;
+  padding: 10px;
 }

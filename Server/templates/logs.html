@@ -70,11 +70,14 @@
 		<span class="blue">type '<span class="grey">help</span>' to see a list of comands available <br/> or '<span class="grey">contact</span>' for a list of ways to contact me.</span><br>
 	</div>
 	<div class="action">
-		<span>logs$ </span>
+		<h2>$></h2>
 		<!-- <textarea class="input" name="input" cols="30" rows="1"></textarea> -->
 	</div>
 </div>
 <script src="../static/jquery.min.js"></script>
+<!-- <script src="../static/socket.io.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+
 <script>
 // =====================
 // Create required vars
@@ -138,4 +141,21 @@ function sayThis(data) {
 function Output(data) {
 	$(data).appendTo(output);
 }
+
+// var socket = io.connect('http://' + document.domain + ':' + location.port);
+var socket = io();
+    socket.on('connect', function() {
+		console.log('Logs Conectados')
+    });
+
+socket.on('log', function( msg ) {
+        console.log( msg )
+        if( typeof msg !== 'undefined' ) {
+			const action = $('.action');
+			if (action.children().length > 5){
+				action.children().last().remove();
+			}
+			action.append('<div><b style="color: #fff">'+msg+'</b></div>')
+        }
+      })
 </script>
