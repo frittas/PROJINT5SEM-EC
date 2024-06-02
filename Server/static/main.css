@@ -1,7 +1,7 @@
 @import "./base.css";
 
 #app {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
   padding: 2rem;
 
@@ -37,8 +37,8 @@ a,
   }
 
   .video-wrapper {
-    min-width: 640px;
-    min-height: 480px;
+    max-width: 640px;
+    max-height: 480px;
     border: solid 1px black;
   }
 

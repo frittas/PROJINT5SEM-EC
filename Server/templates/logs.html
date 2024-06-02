@@ -153,7 +153,7 @@ socket.on('log', function( msg ) {
         if( typeof msg !== 'undefined' ) {
 			const action = $('.action');
 			if (action.children().length > 5){
-				action.children().last().remove();
+				action.find(':nth-child(2)').remove();
 			}
 			action.append('<div><b style="color: #fff">'+msg+'</b></div>')
         }

@@ -7,7 +7,7 @@ from multiprocessing.pool import ThreadPool
 import cv2
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'vnkdjnfjknfl1232#'
+app.config["SECRET_KEY"] = "vnkdjnfjknfl1232#"
 socketio = SocketIO(app)
 
 connection_string = "mongodb://localhost:27017/"  # configuracao do mongo
@@ -18,13 +18,13 @@ facereco = FaceRecognition(socketio)
 repository = ImageRepository(connection_string, db_name, collection_name)
 
 camera_port = 0
-# camera = cv2.VideoCapture(camera_port)  # this makes a web cam object
 general_frame = None
 
 
 def generate_frames():
     # this makes a web cam object
-    camera = cv2.VideoCapture("http://192.168.3.52:81/stream")
+    # camera = cv2.VideoCapture("http://192.168.3.52:81/stream")
+    camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     while True:
         retval, frame = camera.read()
         if not retval:
@@ -47,16 +47,16 @@ async_result = pool.apply_async(generate_frames)
 def save_face(name: str):
     imgencode = cv2.imencode(".jpg", general_frame)[1].tobytes()
     repository.salvar_imagem(imgencode, name)
-    socketio.emit('log', f"Rosto Salvo!: {name}")
+    facereco.log(f"Rosto Salvo!: {name}", "rosto_salvo")
     facereco.carregarImagens()
 
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/", methods=["GET", "POST"])
 def index():
     return render_template("index.html")
 
 
-@app.route("/save", methods=['GET', 'POST'])
+@app.route("/save", methods=["GET", "POST"])
 def save():
     data = request.get_json()
     return Response(save_face(data))
@@ -70,5 +70,4 @@ def video():
 
 
 if __name__ == "__main__":
-    # app.run(host="localhost", port=8000, debug=True, threaded=True)
-    socketio.run(app, host='localhost', port=8000, debug=True)
+    socketio.run(app, host="localhost", port=8000, debug=True)

@@ -4,11 +4,17 @@ import numpy as np
 import cv2 as cv
 from flask_socketio import SocketIO
 from modules.ImageRepository import ImageRepository
+from modules.notification import Message
+import time
 
 connection_string = "mongodb://localhost:27017/"  # configuracao do mongo
 db_name = "esp_vision"
 collection_name = "imagens"
 socket: SocketIO
+message: Message
+last_sent_time: dict
+send_count: dict
+
 
 class FaceRecognition:
     def __init__(self, socketio: SocketIO):
@@ -16,10 +22,12 @@ class FaceRecognition:
         self.pasta_base = "server/database"
         self.nomes_base = []
         self.imagens_base = []
-        self.repository = ImageRepository(
-            connection_string, db_name, collection_name)
+        self.repository = ImageRepository(connection_string, db_name, collection_name)
         self.carregarImagens()
-        # self.carregarDataBase()
+        self.message = Message("", "")
+        self.last_sent_time = {}
+        self.last_sent_message = {}
+        self.send_count = {}
 
     def carregarDataBase(self):
         for nome_arquivo in os.listdir(self.pasta_base):
@@ -56,16 +64,18 @@ class FaceRecognition:
             # Comparar cada face encontrada com a lista de imagens da base
             for face_codificacao in frame_encoding:
                 correspondencia_encontrada = False
-                for codificacao_base, nome_base in zip(self.imagens_base, self.nomes_base):
+                for codificacao_base, nome_base in zip(
+                    self.imagens_base, self.nomes_base
+                ):
                     comparacao = face_recognition.compare_faces(
-                        [codificacao_base], face_codificacao)
+                        [codificacao_base], face_codificacao
+                    )
 
                     if comparacao[0]:  # Se for uma correspondência
 
                         for top, right, bottom, left in face_locations:
                             detected_image = cv.rectangle(
-                                frame, (left, top), (right,
-                                                     bottom), (36, 255, 12), 2
+                                frame, (left, top), (right, bottom), (36, 255, 12), 2
                             )
                         cv.putText(
                             detected_image,
@@ -76,15 +86,12 @@ class FaceRecognition:
                             (36, 255, 12),
                             2,
                         )
-
-                        print(f"Rosto detectado: {nome_base}")
-                        self.socket.emit('log', f"Rosto detectado: {nome_base}")
+                        self.log(f"Rosto detectado: {nome_base}", nome_base)
                         correspondencia_encontrada = True
                         break
 
             if not correspondencia_encontrada:
-                print("Rosto detectado, mas não está na base de dados!")
-                self.socket.emit('log', f"Rosto não identificado!")
+                self.log("Rosto não identificado!", "nao_identificado")
 
                 for top, right, bottom, left in face_locations:
                     undetected_image = cv.rectangle(
@@ -100,41 +107,36 @@ class FaceRecognition:
                     2,
                 )
 
-                # results = face_recognition.compare_faces(
-                #     self.imagens_base, frame_encoding[0]
-                # )
+    def log(self, message, id):
+        if self.should_send(id, 15):
+            self.socket.emit("log", message)
 
-                # for result, nome in zip(results, self.nomes_base):
-                #     if result.T:
-                #         for top, right, bottom, left in face_locations:
-                #             image = cv.rectangle(
-                #                 frame, (left, top), (right, bottom), (36, 255, 12), 2
-                #             )
-                #         cv.putText(
-                #             image,
-                #             nome,
-                #             (left, top - 20),
-                #             cv.FONT_HERSHEY_SIMPLEX,
-                #             0.9,
-                #             (36, 255, 12),
-                #             2,
-                #         )
-                #         return nome
-                #     else:
-                #         for top, right, bottom, left in face_locations:
-                #             image = cv.rectangle(
-                #                 frame, (left, top), (right, bottom), (0, 0, 255), 2
-                #             )
-                #         cv.putText(
-                #             image,
-                #             "NAO IDENTIFICADO",
-                #             (left - 50, top - 20),
-                #             cv.FONT_HERSHEY_SIMPLEX,
-                #             0.9,
-                #             (0, 0, 255),
-                #             2,
-                #         )
-                #         return "NAO IDENTIFICADO"
+    def should_send(self, message_id, interval):
+        current_time = time.time()
+        if message_id not in self.last_sent_message:
+            # Se o ID da mensagem não está no dicionário, podemos enviar
+            self.last_sent_message[message_id] = current_time
+            self.send_count[message_id] = 1
+            return True
+        elif current_time - self.last_sent_message[message_id] >= interval + 1:
+            # Se o intervalo de tempo for maior ou igual ao especificado, podemos enviar
+            self.last_sent_message[message_id] = current_time
+            self.send_count[message_id] += 1
+            if (
+                message_id == "nao_identificado"
+                and self.send_count.get(message_id, 0) > 3
+            ):
+                # Se o ID é 1 e já foi tentado enviar 2 vezes, enviar agora
+                self.last_sent_message[message_id] = current_time
+                self.message.send(
+                    "Uma pessoa não reconhecida está tentando acessar o ambiente. verificar imediatamente"
+                )
+                print(
+                    "Uma pessoa não reconhecida está tentando acessar o ambiente. verificar imediatamente"
+                )
+            return True
 
-    def gravarFace(frame):
-        return True
+        else:
+            # Caso contrário, não enviar
+            self.send_count[message_id] = self.send_count.get(message_id, 0) + 1
+            return False
